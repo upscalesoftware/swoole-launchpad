@@ -1,18 +1,18 @@
-Swoole Process [![Build Status](https://api.travis-ci.org/upscalesoftware/swoole-process.svg?branch=master)](https://travis-ci.org/upscalesoftware/swoole-process)
-==============
+Swoole Launchpad [![Build Status](https://api.travis-ci.org/upscalesoftware/swoole-launchpad.svg?branch=master)](https://travis-ci.org/upscalesoftware/swoole-launchpad)
+================
 
 This library extends the process management capabilities of [Swoole](https://www.swoole.co.uk/) framework.
 
 **Features:**
 - Swoole server launch in child process
 - Swoole server process termination
-- Compatible with [PHPUnit](https://phpunit.de/) testing framework
+- [PHPUnit](https://phpunit.de/) testing framework compatibility
 
 ## Installation
 
 The library is to be installed via [Composer](https://getcomposer.org/) as a dependency:
 ```bash
-composer require upscale/swoole-process
+composer require upscale/swoole-launchpad
 ```
 ## Usage
 
@@ -31,7 +31,7 @@ class HttpServerTest extends \PHPUnit\Framework\TestCase
     protected $server;
 
     /**
-     * @var \Upscale\Swoole\Process\ProcessManager
+     * @var \Upscale\Swoole\Launchpad\ProcessManager
      */
     protected $processManager;
 
@@ -49,7 +49,7 @@ class HttpServerTest extends \PHPUnit\Framework\TestCase
             'worker_num' => 1,
         ]);
         
-        $this->processManager = new \Upscale\Swoole\Process\ProcessManager();
+        $this->processManager = new \Upscale\Swoole\Launchpad\ProcessManager();
     }
 
     protected function tearDown()

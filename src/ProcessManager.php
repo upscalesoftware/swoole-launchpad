@@ -3,7 +3,7 @@
  * Copyright © Upscale Software. All rights reserved.
  * See COPYRIGHT.txt for license details.
  */
-namespace Upscale\Swoole\Process;
+namespace Upscale\Swoole\Launchpad;
 
 class ProcessManager
 {
