@@ -68,6 +68,7 @@ class ProcessManager
             $cutout = $this->cutouts[$pid];
             $cutout->wakeup();
             unset($this->cutouts[$pid]);
+            \Swoole\Process::wait();
         }
     }
 }
