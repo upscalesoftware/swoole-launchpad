@@ -8,6 +8,11 @@ namespace Upscale\Swoole\Process;
 class ProcessManager
 {
     /**
+     * Infinite amount of time
+     */
+    const TIME_INFINITY = 0;
+    
+    /**
      * Kill switches of managed processes
      * 
      * @var \Swoole\Atomic[]
@@ -23,7 +28,7 @@ class ProcessManager
      * @return int PID
      * @throws \RuntimeException
      */
-    public function spawn(\Swoole\Server $server, $timeout = 10, $lifetime = PHP_INT_MAX)
+    public function spawn(\Swoole\Server $server, $timeout = 10, $lifetime = self::TIME_INFINITY)
     {
         $launch = new \Swoole\Atomic();
         $cutout = new \Swoole\Atomic();
