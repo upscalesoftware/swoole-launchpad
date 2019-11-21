@@ -100,7 +100,7 @@ class ProcessManagerTest extends \PHPUnit\Framework\TestCase
      * @param int $timeout Timeout in seconds
      * @return string|bool
      */
-    protected function curl($url, $timeout = 1)
+    protected function curl($url, $timeout = 2)
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
