@@ -83,6 +83,48 @@ class HttpServerTest extends \PHPUnit\Framework\TestCase
 }
 ```
 
+More compact version:
+```php
+class HttpServerTest extends \Upscale\Swoole\Launchpad\Tests\TestCase
+{
+    protected function setUp()
+    {
+        parent::setUp();
+    
+        $this->server = new \Swoole\Http\Server('127.0.0.1', 8080);
+        $this->server->set([
+            'log_file' => '/dev/null',
+            'log_level' => 4,
+            'worker_num' => 1,
+        ]);
+    }
+
+    public function testResponseStatus()
+    {
+        $this->server->on('request', function ($request, $response) {
+            $response->status(404);
+            $response->end();
+        });
+        $this->spawn($this->server);
+
+        $result = $this->curl('http://127.0.0.1:8080/');
+        $this->assertStringStartsWith('HTTP/1.1 404 Not Found', $result);
+    }
+    
+    public function testResponseBody()
+    {
+        $this->server->on('request', function ($request, $response) {
+            $response->end('Success');
+        });
+        $this->spawn($this->server);
+
+        $result = $this->curl('http://127.0.0.1:8080/');
+        $this->assertStringStartsWith('HTTP/1.1 200 OK', $result);
+        $this->assertStringEndsWith('Success', $result);
+    }
+}
+```
+
 ## Contributing
 
 Pull Requests with fixes and improvements are welcome!

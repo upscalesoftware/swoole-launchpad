@@ -5,27 +5,17 @@
  */
 namespace Upscale\Swoole\Launchpad\Tests;
 
-use Upscale\Swoole\Process\ProcessManager;
-
-class ProcessManagerTest extends \PHPUnit\Framework\TestCase
+class ProcessManagerTest extends TestCase
 {
     /**
      * @var HttpServer
      */
     protected $server;
 
-    /**
-     * @var ProcessManager
-     */
-    protected $processManager;
-
-    /**
-     * @var int
-     */
-    protected $pid;
-
     protected function setUp()
     {
+        parent::setUp();
+
         $this->server = new HttpServer('127.0.0.1', 8080);
         $this->server->set([
             'log_file' => '/dev/null',
@@ -35,18 +25,11 @@ class ProcessManagerTest extends \PHPUnit\Framework\TestCase
         $this->server->on('request', function (\Swoole\Http\Request $request, \Swoole\Http\Response $response) {
             $response->end('Success');
         });
-        
-        $this->processManager = new ProcessManager();
-    }
-
-    protected function tearDown()
-    {
-        $this->processManager->kill($this->pid);
     }
 
     public function testSpawn()
     {
-        $this->pid = $this->processManager->spawn($this->server);
+        $this->spawn($this->server);
 
         $result = $this->curl('http://127.0.0.1:8080/');
         $this->assertContains('Success', $result);
@@ -54,7 +37,7 @@ class ProcessManagerTest extends \PHPUnit\Framework\TestCase
 
     public function testSpawnAlive()
     {
-        $this->pid = $this->processManager->spawn($this->server);
+        $this->spawn($this->server);
 
         sleep(2);
 
@@ -64,7 +47,7 @@ class ProcessManagerTest extends \PHPUnit\Framework\TestCase
 
     public function testSpawnStale()
     {
-        $this->pid = $this->processManager->spawn($this->server, 10, 1);
+        $this->spawn($this->server, 10, 1);
 
         sleep(2);
 
@@ -80,34 +63,16 @@ class ProcessManagerTest extends \PHPUnit\Framework\TestCase
     {
         $this->server->setDelay(2);
         
-        $this->pid = $this->processManager->spawn($this->server, 1);
+        $this->spawn($this->server, 1);
     }
 
     public function testKill()
     {
-        $this->pid = $this->processManager->spawn($this->server);
+        $pid = $this->spawn($this->server);
         
-        $this->processManager->kill($this->pid);
+        $this->kill($pid);
 
         $result = $this->curl('http://127.0.0.1:8080/');
         $this->assertFalse($result);
-    }
-
-    /**
-     * Send an HTTP request to a given URL and return response body
-     *
-     * @param string $url
-     * @param int $timeout Timeout in seconds
-     * @return string|bool
-     */
-    protected function curl($url, $timeout = 2)
-    {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
-        $result = curl_exec($curl);
-        curl_close($curl);
-        return $result;
     }
 }
