@@ -10,24 +10,52 @@ class HttpServer extends \Swoole\Http\Server
     /**
      * @var int
      */
-    protected $delay = 0;
+    protected $startupDelay = 0;
 
     /**
-     * @param int $value
+     * @var int 
      */
-    public function setDelay($value)
+    protected $shutdownDelay = 0;
+
+    /**
+     * Assign server startup delay in seconds
+     * 
+     * @param int $delay
+     */
+    public function setStartupDelay($delay)
     {
-        $this->delay = $value;
+        $this->startupDelay = $delay;
     }
 
     /**
-     * {@inheritdoc}
+     * Assign server shutdown delay in seconds
+     * 
+     * @param int $delay
+     */
+    public function setShutdownDelay($delay)
+    {
+        $this->shutdownDelay = $delay;
+    }
+
+    /**
+     * Delay server startup
      */
     public function start()
     {
-        if ($this->delay > 0) {
-            sleep($this->delay);
+        if ($this->startupDelay > 0) {
+            sleep($this->startupDelay);
         }
         return parent::start();
+    }
+    
+    /**
+     * Delay server shutdown
+     */
+    public function shutdown()
+    {
+        if ($this->shutdownDelay > 0) {
+            sleep($this->shutdownDelay);
+        }
+        return parent::shutdown();
     }
 }
