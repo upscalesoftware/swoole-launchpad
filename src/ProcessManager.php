@@ -13,11 +13,11 @@ class ProcessManager
     const TIME_INFINITY = 0;
     
     /**
-     * Kill switches of managed processes
+     * Managed processes by PID
      * 
-     * @var \Swoole\Atomic[]
+     * @var \Swoole\Process[]
      */
-    protected $cutouts = [];
+    protected $processes = [];
 
     /**
      * Launch a given server in a child process and return its PID
@@ -30,30 +30,25 @@ class ProcessManager
      */
     public function spawn(\Swoole\Server $server, $timeout = 10, $lifetime = self::TIME_INFINITY)
     {
-        $launch = new \Swoole\Atomic();
-        $cutout = new \Swoole\Atomic();
+        $semaphore = new \Swoole\Atomic();
 
-        $server->on('WorkerStart', function () use ($launch) {
-            $launch->wakeup();
+        $server->on('WorkerStart', function ($server) use ($semaphore, $lifetime) {
+            $semaphore->wakeup();
+            if ($lifetime > 0) {
+                $server->after($lifetime * 1000, [$server, 'shutdown']);
+            }
         });
         
-        $watchdog = new \Swoole\Process(function () use ($server, $cutout, $lifetime) {
-            $cutout->wait($lifetime);
-            $server->shutdown();
-        });
-        $server->addProcess($watchdog);
-
         $process = new \Swoole\Process([$server, 'start']);
         $pid = $process->start();
 
-        if (!$launch->wait($timeout)) {
-            $cutout->wakeup();
+        if (!$semaphore->wait($timeout)) {
             \Swoole\Process::kill($pid);
             throw new \RuntimeException('Server startup timeout exceeded.');
         }
         
-        $this->cutouts[$pid] = $cutout;
-
+        $this->processes[$pid] = $process;
+        
         return $pid;
     }
 
@@ -64,10 +59,9 @@ class ProcessManager
      */
     public function kill($pid)
     {
-        if (isset($this->cutouts[$pid])) {
-            $cutout = $this->cutouts[$pid];
-            $cutout->wakeup();
-            unset($this->cutouts[$pid]);
+        if (isset($this->processes[$pid])) {
+            unset($this->processes[$pid]);
+            \Swoole\Process::kill($pid);
             \Swoole\Process::wait();
         }
     }
