@@ -125,6 +125,21 @@ class HttpServerTest extends \Upscale\Swoole\Launchpad\Tests\TestCase
 }
 ```
 
+Make sure to autoload the test classes in your `composer.json`:
+```json
+{
+    "require-dev": {
+        "phpunit/phpunit": "^7.0",
+        "upscale/swoole-launchpad": "^1.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Upscale\\Swoole\\Launchpad\\Tests\\": "vendor/upscale/swoole-launchpad/tests/"
+        }
+    }
+}
+```
+
 ## Contributing
 
 Pull Requests with fixes and improvements are welcome!
