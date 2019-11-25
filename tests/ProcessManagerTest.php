@@ -69,6 +69,9 @@ class ProcessManagerTest extends TestCase
     public function testKill()
     {
         $pid = $this->spawn($this->server);
+
+        $result = $this->curl('http://127.0.0.1:8080/');
+        $this->assertContains('Success', $result);
         
         $this->kill($pid);
 
