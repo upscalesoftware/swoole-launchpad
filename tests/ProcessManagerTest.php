@@ -63,7 +63,12 @@ class ProcessManagerTest extends TestCase
     {
         $this->server->setStartupDelay(2);
         
-        $this->spawn($this->server, 1);
+        try {
+            $this->spawn($this->server, 1);
+        } finally {
+            $result = $this->curl('http://127.0.0.1:8080/');
+            $this->assertFalse($result);
+        }
     }
 
     public function testKill()
