@@ -1,7 +1,7 @@
 {
     "name": "upscale/swoole-launchpad",
     "description": "Swoole server process management",
-    "version": "1.2.0",
+    "version": "2.0.0",
     "keywords": ["Swoole", "server", "process", "manager", "scheduler", "spawn", "fork", "daemon", "PHPUnit", "tests"],
     "homepage": "https://github.com/upscalesoftware/swoole-launchpad",
     "license": "Apache-2.0",
@@ -12,12 +12,12 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "ext-swoole": "^4.0"
+        "php": ">=8.0",
+        "ext-swoole": "^4.0||^5.0"
     },
     "require-dev": {
         "ext-curl": "*",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {"Upscale\\Swoole\\Launchpad\\": "src/"}

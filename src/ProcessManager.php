@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Copyright © Upscale Software. All rights reserved.
  * See LICENSE.txt for license details.
@@ -17,7 +18,7 @@ class ProcessManager
      * 
      * @var \Swoole\Process[]
      */
-    protected $processes = [];
+    protected array $processes = [];
 
     /**
      * Launch a given server in a child process and return its PID
@@ -28,11 +29,11 @@ class ProcessManager
      * @return int PID
      * @throws \RuntimeException
      */
-    public function spawn(\Swoole\Server $server, $timeout = 10, $lifetime = self::TIME_INFINITY)
+    public function spawn(\Swoole\Server $server, int $timeout = 10, int $lifetime = self::TIME_INFINITY): int
     {
         $semaphore = new \Swoole\Atomic();
 
-        $server->on('WorkerStart', function ($server) use ($semaphore, $lifetime) {
+        $server->on('WorkerStart', function (\Swoole\Server $server) use ($semaphore, $lifetime) {
             $semaphore->wakeup();
             if ($lifetime > 0) {
                 $server->after($lifetime * 1000, [$server, 'shutdown']);
@@ -54,10 +55,8 @@ class ProcessManager
 
     /**
      * Terminate managed process identified by a given PID
-     * 
-     * @param int $pid
      */
-    public function kill($pid)
+    public function kill(int $pid): void
     {
         if (isset($this->processes[$pid])) {
             unset($this->processes[$pid]);

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Copyright © Upscale Software. All rights reserved.
  * See LICENSE.txt for license details.
@@ -7,32 +8,22 @@ namespace Upscale\Swoole\Launchpad\Tests;
 
 class HttpServer extends \Swoole\Http\Server
 {
-    /**
-     * @var int
-     */
-    protected $startupDelay = 0;
+    protected int $startupDelay = 0;
 
-    /**
-     * @var int 
-     */
-    protected $shutdownDelay = 0;
+    protected int $shutdownDelay = 0;
 
     /**
      * Assign server startup delay in seconds
-     * 
-     * @param int $delay
      */
-    public function setStartupDelay($delay)
+    public function setStartupDelay(int $delay): void
     {
         $this->startupDelay = $delay;
     }
 
     /**
      * Assign server shutdown delay in seconds
-     * 
-     * @param int $delay
      */
-    public function setShutdownDelay($delay)
+    public function setShutdownDelay(int $delay): void
     {
         $this->shutdownDelay = $delay;
     }
@@ -40,7 +31,7 @@ class HttpServer extends \Swoole\Http\Server
     /**
      * Delay server startup
      */
-    public function start()
+    public function start(): bool
     {
         if ($this->startupDelay > 0) {
             sleep($this->startupDelay);
@@ -51,7 +42,7 @@ class HttpServer extends \Swoole\Http\Server
     /**
      * Delay server shutdown
      */
-    public function shutdown()
+    public function shutdown(): bool
     {
         if ($this->shutdownDelay > 0) {
             sleep($this->shutdownDelay);

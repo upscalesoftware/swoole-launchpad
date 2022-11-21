@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Copyright © Upscale Software. All rights reserved.
  * See LICENSE.txt for license details.
@@ -9,24 +10,14 @@ use Upscale\Swoole\Launchpad\ProcessManager;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var ProcessManager
-     */
-    private $processManager;
+    private ProcessManager $processManager;
 
-    /**
-     * @var int[]
-     */
-    private $processIds = [];
+    private array $processIds = [];
 
     /**
      * Send an HTTP request to a given URL and return response
-     *
-     * @param string $url
-     * @param array $options
-     * @return string|bool
      */
-    public static function curl($url, array $options = [])
+    public static function curl(string $url, array $options = []): ?string
     {
         $options += [
             CURLOPT_URL => $url,
@@ -42,35 +33,29 @@ class TestCase extends \PHPUnit\Framework\TestCase
         }
         $result = curl_exec($curl);
         curl_close($curl);
-        return $result;
+        return ($result !== false)
+            ? $result
+            : null;
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->processManager = new ProcessManager();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         array_walk($this->processIds, [$this, 'kill']);
     }
 
-    /**
-     * @param \Swoole\Server $server
-     * @param mixed ...$args
-     * @return int
-     */
-    protected function spawn(\Swoole\Server $server, ...$args)
+    protected function spawn(\Swoole\Server $server, ...$args): int
     {
         $pid = $this->processManager->spawn($server, ...$args);
         $this->processIds[] = $pid;
         return $pid;
     }
 
-    /**
-     * @param int $pid
-     */
-    protected function kill($pid)
+    protected function kill(int $pid)
     {
         $this->processManager->kill($pid);
     }

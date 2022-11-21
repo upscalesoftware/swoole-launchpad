@@ -25,22 +25,13 @@ vendor/bin/phpunit --process-isolation
 ```php
 class HttpServerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var \Swoole\Http\Server
-     */
-    protected $server;
+    protected \Swoole\Http\Server $server;
 
-    /**
-     * @var \Upscale\Swoole\Launchpad\ProcessManager
-     */
-    protected $processManager;
+    protected \Upscale\Swoole\Launchpad\ProcessManager $processManager;
 
-    /**
-     * @var int
-     */
-    protected $pid;
+    protected int $pid;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->server = new \Swoole\Http\Server('127.0.0.1', 8080);
         $this->server->set([
@@ -52,7 +43,7 @@ class HttpServerTest extends \PHPUnit\Framework\TestCase
         $this->processManager = new \Upscale\Swoole\Launchpad\ProcessManager();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->processManager->kill($this->pid);
     }
@@ -87,7 +78,7 @@ More compact version:
 ```php
 class HttpServerTest extends \Upscale\Swoole\Launchpad\Tests\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
     
@@ -129,8 +120,8 @@ Make sure to autoload the test classes in your `composer.json`:
 ```json
 {
     "require-dev": {
-        "phpunit/phpunit": "^7.0",
-        "upscale/swoole-launchpad": "^1.0"
+        "phpunit/phpunit": "^9.5",
+        "upscale/swoole-launchpad": "^2.0"
     },
     "autoload-dev": {
         "psr-4": {
