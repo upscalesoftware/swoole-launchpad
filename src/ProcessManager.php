@@ -36,7 +36,8 @@ class ProcessManager
         $server->on('WorkerStart', function (\Swoole\Server $server) use ($semaphore, $lifetime) {
             $semaphore->wakeup();
             if ($lifetime > 0) {
-                $server->after($lifetime * 1000, [$server, 'shutdown']);
+                sleep($lifetime);
+                $server->shutdown();
             }
         });
         
