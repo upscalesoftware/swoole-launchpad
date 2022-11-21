@@ -1,7 +1,7 @@
 Swoole Launchpad [![Build Status](https://github.com/upscalesoftware/swoole-launchpad/workflows/Tests/badge.svg?branch=master)](https://github.com/upscalesoftware/swoole-launchpad/actions?query=workflow%3ATests+branch%3Amaster)
 ================
 
-This library extends the process management capabilities of [Swoole](https://www.swoole.co.uk/) framework.
+This library extends the process management capabilities of [Swoole](https://github.com/swoole/swoole-src) / [Open Swoole](https://github.com/openswoole/swoole-src).
 
 **Features:**
 - Swoole server launch in child process
